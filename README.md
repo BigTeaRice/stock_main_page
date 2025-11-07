@@ -1,26 +1,9 @@
 # 股票分析工具
 
 我将为您创建一个可以在GitHub环境中运行的股票分析工具，整合Google Finance和AkShare API。
-股票分析工具-支持GoogleFinance和AkShare<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>股票分析工具 - 多数据源支持</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+股票分析工具-支持GoogleFinance和AkShare
+
+
 关键技术特性
 多数据源集成架构
 Google Finance API：支持国际股票数据获取
