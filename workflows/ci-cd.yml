@@ -1,0 +1,56 @@
+name: Stock Analysis CI/CD
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # 每天 UTC 10:00 触发
+  workflow_dispatch:      # 手动触发
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Fetch Data & Generate Reports
+        env:
+          AKSHARE_TOKEN: ${{ secrets.AKSHARE_TOKEN }}
+        run: |
+          python src/main.py
+
+      - name: Archive Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: analysis-results
+          path: |
+            reports/*.html
+            charts/*.png
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: analysis-results
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: reports
+          clean: true
