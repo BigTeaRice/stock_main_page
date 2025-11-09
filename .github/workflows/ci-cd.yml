@@ -1,10 +1,3 @@
-name: Stock Analysis CI/CD
-
-on:
-  schedule:
-    - cron: '0 10 * * *'  # 每天 UTC 10:00 触发
-  workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,22 +11,9 @@ jobs:
           python-version: '3.11'
 
       - name: Install System Dependencies
-        run: sudo apt-get install -y libta-lib-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libta-lib-dev
 
       - name: Install Python Dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run Analysis
-        env:
-          AKSHARE_TOKEN: ${{ secrets.AKSHARE_TOKEN }}
-        run: python src/main.py
-
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: analysis-results
-          path: |
-            reports/*.html
-            charts/*.png
+        run: pip install -r requirements.txt
