@@ -1,6 +1,26 @@
+name: Stock Analysis CI/CD
+
+# 必须包含 on 部分，定义触发条件
+on:
+  # 定时触发（每天 UTC 10:00，即北京时间 18:00）
+  schedule:
+    - cron: '0 10 * * *'
+  
+  # 手动触发
+  workflow_dispatch:
+  
+  # 代码推送触发
+  push:
+    branches: [ main, master ]
+  
+  # 拉取请求触发
+  pull_request:
+    branches: [ main, master ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -10,13 +30,25 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install System Dependencies
+      - name: Install Build Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y libta-lib-dev
+          sudo apt-get install -y build-essential wget
+
+      - name: Install TA-Lib from Source
+        run: |
+          wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
+          tar -xzf ta-lib-0.4.0-src.tar.gz
+          cd ta-lib/
+          ./configure --prefix=/usr
+          make
+          sudo make install
 
       - name: Install Python Dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install --upgrade pip
+          pip install TA-Lib
+          pip install yfinance akshare pandas matplotlib plotly
 
       - name: Run Analysis
         env:
