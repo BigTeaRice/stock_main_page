@@ -1,0 +1,72 @@
+/* 报告导航栏 */
+.report-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+.report-nav-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.report-nav-item:hover {
+    background: #f5f5f5;
+}
+.report-nav-item.active {
+    background: #e9f0ff;
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* 符号按钮 */
+.symbol-buttons {
+    margin: 1rem 0;
+}
+.symbol-btn {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background: white;
+    color: #007bff;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.symbol-btn:hover {
+    background: #f0f8ff;
+}
+.symbol-btn.active {
+    background: #007bff;
+    color: white;
+}
+
+/* 错误提示 */
+.error-message {
+    display: none;
+    color: red;
+    padding: 0.5rem;
+    background: #ffebee;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+/* 报告内容 */
+.report-content {
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin: 1rem 0;
+}
+.report-content table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.report-content th, .report-content td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+.report-content th {
+    background: #f2f2f2;
+}
