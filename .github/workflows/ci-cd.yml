@@ -1,3 +1,10 @@
+name: Stock Analysis CI/CD
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # 每天 UTC 10:00 触发
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
