@@ -22,8 +22,8 @@ def fetch_stock_data(symbol, period):
             df = ak.stock_zh_a_hist(
                 symbol=symbol_ak,
                 period="daily",
-                start_date=datetime.now().strftime("%Y%m%d"),
-                end_date=datetime.now().strftime("%Y%m%d"),
+                start_date=datetime.datetime.now().strftime("%Y%m%d"),
+                end_date=datetime.datetime.now().strftime("%Y%m%d"),
                 adjust=""
             )
             return df.rename(columns={
