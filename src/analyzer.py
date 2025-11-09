@@ -1,9 +1,9 @@
 import pandas as pd
-import numpy as np
 import talib as ta
 
 class StockAnalyzer:
-    def __init__(self, data):
+    def __init__(self, symbol, data):
+        self.symbol = symbol
         self.data = data
         self.chart_data = self.prepare_chart_data()
         
@@ -44,12 +44,12 @@ class StockAnalyzer:
     def generate_report(self):
         # 生成关键指标摘要
         summary = {
-            'Symbol': self.data['Symbol'].iloc[0],
-            'Current_Price': self.data['Close'].iloc[-1],
-            'Change_Pct': (self.data['Close'].iloc[-1] - self.data['Close'].iloc[0]) / self.data['Close'].iloc[0] * 100,
-            'Volume': self.data['Volume'].iloc[-1],
-            'RSI': self.chart_data['RSI'].iloc[-1],
-            'MACD_Diff': self.chart_data['MACD'].iloc[-1] - self.chart_data['MACD_Signal'].iloc[-1]
+            'symbol': self.symbol,
+            'current_price': self.data['Close'].iloc[-1],
+            'change_pct': (self.data['Close'].iloc[-1] - self.data['Close'].iloc[0]) / self.data['Close'].iloc[0] * 100,
+            'volume': self.data['Volume'].iloc[-1],
+            'rsi': self.chart_data['RSI'].iloc[-1],
+            'macd_diff': self.chart_data['MACD'].iloc[-1] - self.chart_data['MACD_Signal'].iloc[-1]
         }
         
         return summary
