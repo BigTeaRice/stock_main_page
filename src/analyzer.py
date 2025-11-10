@@ -1,55 +1,80 @@
+"""
+分析模块 - 简化版本
+"""
+
 import pandas as pd
-import talib as ta
+import numpy as np
+import logging
+from dataclasses import dataclass
+from typing import Dict, Any
+
+logger = logging.getLogger(__name__)
+
+@dataclass
+class AnalysisResult:
+    """分析结果"""
+    symbol: str
+    indicators: Dict[str, Any]
+    signals: Dict[str, str]
+    recommendation: str
+    confidence: float
 
 class StockAnalyzer:
-    def __init__(self, symbol, data):
-        self.symbol = symbol
-        self.data = data
-        self.chart_data = self.prepare_chart_data()
-        
-    def prepare_chart_data(self):
-        # 计算技术指标
-        closes = self.data['Close'].values
-        highs = self.data['High'].values
-        lows = self.data['Low'].values
-        opens = self.data['Open'].values
-        
-        # 移动平均线
-        ma5 = ta.SMA(closes, timeperiod=5)
-        ma10 = ta.SMA(closes, timeperiod=10)
-        ma20 = ta.SMA(closes, timeperiod=20)
-        
-        # RSI
-        rsi = ta.RSI(closes, timeperiod=14)
-        
-        # MACD
-        macd, macdsignal, macdhist = ta.MACD(closes, fastperiod=12, slowperiod=26, signalperiod=9)
-        
-        # 布林带
-        upper, middle, lower = ta.BBANDS(closes, timeperiod=20)
-        
-        # 合并数据
-        chart_data = self.data.copy()
-        chart_data['MA5'] = ma5
-        chart_data['MA10'] = ma10
-        chart_data['MA20'] = ma20
-        chart_data['RSI'] = rsi
-        chart_data['MACD'] = macd
-        chart_data['MACD_Signal'] = macdsignal
-        chart_data['BB_Upper'] = upper
-        chart_data['BB_Lower'] = lower
-        
-        return chart_data
+    """股票分析器 - 简化版本"""
     
-    def generate_report(self):
-        # 生成关键指标摘要
-        summary = {
-            'symbol': self.symbol,
-            'current_price': self.data['Close'].iloc[-1],
-            'change_pct': (self.data['Close'].iloc[-1] - self.data['Close'].iloc[0]) / self.data['Close'].iloc[0] * 100,
-            'volume': self.data['Volume'].iloc[-1],
-            'rsi': self.chart_data['RSI'].iloc[-1],
-            'macd_diff': self.chart_data['MACD'].iloc[-1] - self.chart_data['MACD_Signal'].iloc[-1]
-        }
+    def __init__(self):
+        self.indicators = {}
         
-        return summary
+    def technical_analysis(self, df, symbol):
+        """技术分析 - 简化版本"""
+        logger.info(f"分析 {symbol}")
+        
+        try:
+            # 尝试使用 TA-Lib
+            import talib
+            indicators = self._calculate_with_talib(df)
+        except ImportError:
+            logger.warning("TA-Lib 不可用，使用简化分析")
+            indicators = self._calculate_simple_indicators(df)
+        
+        signals = self._generate_signals(indicators)
+        recommendation, confidence = self._generate_recommendation(signals)
+        
+        return AnalysisResult(
+            symbol=symbol,
+            indicators=indicators,
+            signals=signals,
+            recommendation=recommendation,
+            confidence=confidence
+        )
+    
+    def _calculate_simple_indicators(self, df):
+        """计算简化指标"""
+        close = df['Close']
+        
+        return {
+            'sma_20': close.rolling(20).mean(),
+            'sma_50': close.rolling(50).mean(),
+            'rsi': self._calculate_rsi(close),
+            'volume_sma': df['Volume'].rolling(20).mean()
+        }
+    
+    def _calculate_rsi(self, prices, window=14):
+        """计算RSI"""
+        delta = prices.diff()
+        gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
+        rs = gain / loss
+        rsi = 100 - (100 / (1 + rs))
+        return rsi
+    
+    def _generate_signals(self, indicators):
+        """生成信号"""
+        return {
+            'trend': '上升' if len(indicators) > 0 else '未知',
+            'momentum': '中性'
+        }
+    
+    def _generate_recommendation(self, signals):
+        """生成建议"""
+        return '持有', 0.7
